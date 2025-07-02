@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import "./App.css";
 
-// Datos de notas y reflexiones
 const dailyNotes = [
   "Encuentra paz en lo simple.",
   "Hoy, tu luz brilla más de lo que imaginas.",
   "Cada paso es un nuevo comienzo.",
 ];
+
 const reflections = [
   "Alguien una vez inspiró mi camino, y aunque ya no caminamos juntos, su luz aún guía mi fuego.",
   "A veces, las cosas no salen como esperábamos, pero cada día es una oportunidad para brillar.",
@@ -20,42 +20,50 @@ function App() {
   const [favorites, setFavorites] = useState([]);
   const [currentSection, setCurrentSection] = useState("home");
 
-  // Alternar tema claro/oscuro
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
   }, [theme]);
 
-  // Cambiar nota diaria
   const refreshNote = () => {
     const randomIndex = Math.floor(Math.random() * dailyNotes.length);
     setCurrentNote(dailyNotes[randomIndex]);
   };
 
-  // Guardar pensamiento del usuario
   const saveThought = () => {
     if (userThought.trim()) {
       setFavorites([...favorites, userThought]);
       setUserThought("");
-      window.alert("¡Guardado en favoritos!");
+      toast("¡Guardado en favoritos!");
     }
   };
 
-  // Guardar nota como favorita
   const saveFavorite = (note) => {
     if (!favorites.includes(note)) {
       setFavorites([...favorites, note]);
-      window.alert("¡Guardado en favoritos!");
+      toast("¡Guardado en favoritos!");
     }
+  };
+
+  const toast = (message) => {
+    const toastEl = document.createElement("div");
+    toastEl.textContent = message;
+    toastEl.className = "toast";
+    document.body.appendChild(toastEl);
+    setTimeout(() => {
+      toastEl.classList.add("show");
+      setTimeout(() => {
+        toastEl.classList.remove("show");
+        setTimeout(() => document.body.removeChild(toastEl), 300);
+      }, 2000);
+    }, 100);
   };
 
   return (
     <div className="app-container">
-      {/* Encabezado */}
       <header className="header">
         <h1 className="header-title">Luz en el Camino</h1>
       </header>
 
-      {/* Barra de navegación */}
       <nav className="nav">
         <button
           onClick={() => setCurrentSection("home")}
@@ -63,7 +71,7 @@ function App() {
             currentSection === "home" ? "nav-button-active" : ""
           }`}
         >
-          Inicio
+          🏠 Inicio
         </button>
         <button
           onClick={() => setCurrentSection("create")}
@@ -71,7 +79,7 @@ function App() {
             currentSection === "create" ? "nav-button-active" : ""
           }`}
         >
-          Crear
+          ➕ Crear
         </button>
         <button
           onClick={() => setCurrentSection("favorites")}
@@ -79,20 +87,19 @@ function App() {
             currentSection === "favorites" ? "nav-button-active" : ""
           }`}
         >
-          Favoritos
+          ❤️ Favoritos
         </button>
         <button
           onClick={() => setTheme(theme === "light" ? "dark" : "light")}
           className="theme-button"
         >
-          {theme === "light" ? "Modo oscuro" : "Modo claro"}
+          {theme === "light" ? "🌙" : "☀️"}
         </button>
       </nav>
-      {/* Contenido principal */}
+
       <main className="main">
         {currentSection === "home" && (
           <div className="flex flex-col gap-4">
-            {/* Notas diarias */}
             <section className="section">
               <h2 className="section-title">Nota diaria</h2>
               <motion.p
@@ -104,28 +111,21 @@ function App() {
               >
                 {currentNote}
               </motion.p>
-              <button onClick={refreshNote} className="button">
-                Nueva nota
-              </button>
-              <button
-                onClick={() => saveFavorite(currentNote)}
-                className="button ml-2"
-              >
-                Guardar
-              </button>
+              <div className="button-group">
+                <button onClick={refreshNote}>➕ Nueva nota</button>
+                <button onClick={() => saveFavorite(currentNote)}>
+                  🔖 Guardar
+                </button>
+              </div>
             </section>
 
-            {/* Reflexiones */}
             <section className="section">
               <h2 className="section-title">Reflexiones</h2>
               {reflections.map((reflection, index) => (
                 <div key={index} className="reflection-container">
                   <p className="note-text">{reflection}</p>
-                  <button
-                    onClick={() => saveFavorite(reflection)}
-                    className="button-small"
-                  >
-                    Guardar
+                  <button onClick={() => saveFavorite(reflection)}>
+                    🔖 Guardar
                   </button>
                 </div>
               ))}
@@ -142,9 +142,7 @@ function App() {
               className="textarea"
               placeholder="Escribe tus pensamientos..."
             />
-            <button onClick={saveThought} className="button">
-              Guardar
-            </button>
+            <button onClick={saveThought}>💾 Guardar</button>
           </section>
         )}
 
