@@ -74,14 +74,6 @@ function App() {
           🏠 Inicio
         </button>
         <button
-          onClick={() => setCurrentSection("create")}
-          className={`nav-button ${
-            currentSection === "create" ? "nav-button-active" : ""
-          }`}
-        >
-          ➕ Crear
-        </button>
-        <button
           onClick={() => setCurrentSection("favorites")}
           className={`nav-button ${
             currentSection === "favorites" ? "nav-button-active" : ""
@@ -101,6 +93,18 @@ function App() {
         {currentSection === "home" && (
           <div className="flex flex-col gap-4">
             <section className="section">
+              <h2 className="section-title">Crea tu momento</h2>
+              <div className="button-group">
+                <textarea
+                  value={userThought}
+                  onChange={(e) => setUserThought(e.target.value)}
+                  className="textarea"
+                  placeholder="Escribe tus pensamientos..."
+                />
+                <button onClick={saveThought}>💾 Guardar</button>
+              </div>
+            </section>
+            <section className="section">
               <h2 className="section-title">Nota diaria</h2>
               <motion.p
                 key={currentNote}
@@ -119,31 +123,22 @@ function App() {
               </div>
             </section>
 
-            <section className="section">
+            <div>
               <h2 className="section-title">Reflexiones</h2>
               {reflections.map((reflection, index) => (
-                <div key={index} className="reflection-container">
-                  <p className="note-text">{reflection}</p>
-                  <button onClick={() => saveFavorite(reflection)}>
-                    🔖 Guardar
-                  </button>
-                </div>
+                <section className="section">
+                  <div key={index} className="reflection-container">
+                    <p className="note-text">{reflection}</p>
+                    <div className="card-button">
+                      <button onClick={() => saveFavorite(reflection)}>
+                        🔖 Guardar
+                      </button>
+                    </div>
+                  </div>
+                </section>
               ))}
-            </section>
+            </div>
           </div>
-        )}
-
-        {currentSection === "create" && (
-          <section className="section">
-            <h2 className="section-title">Crea tu momento</h2>
-            <textarea
-              value={userThought}
-              onChange={(e) => setUserThought(e.target.value)}
-              className="textarea"
-              placeholder="Escribe tus pensamientos..."
-            />
-            <button onClick={saveThought}>💾 Guardar</button>
-          </section>
         )}
 
         {currentSection === "favorites" && (
